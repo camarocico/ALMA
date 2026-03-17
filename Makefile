@@ -5,3 +5,8 @@ SHELL := /bin/sh
 include docker/casa/version.env
 export CASA_VERSION
 
+COMPOSE ?= docker compose
+PYTHON ?= python3
+DEV_SERVICE := dev
+CASA_SERVICE := casa
+
