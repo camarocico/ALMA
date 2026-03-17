@@ -24,3 +24,6 @@ help:
 	"Workspace commands (runtime: $(RUNTIME)):" \
 	"  make bootstrap             Validate workspace prerequisites and print next steps" \
 
+bootstrap:
+	@$(PYTHON) scripts/bootstrap.py
+
