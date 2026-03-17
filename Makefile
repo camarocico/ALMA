@@ -34,6 +34,7 @@ PYTEST_ARGS ?=
 	help \
 	bootstrap \
 	build-dev \
+	shell-dev \
 	test-unit \
 
 help:
@@ -41,6 +42,7 @@ help:
 	"Workspace commands (runtime: $(RUNTIME)):" \
 	"  make bootstrap             Validate workspace prerequisites and print next steps" \
 	"  make build-dev             Build the development image  (Docker only)" \
+	"  make shell-dev             Start dev and open a shell" \
 	"  make test-unit             Run the default fast unit-style path in dev" \
 
 bootstrap:
@@ -56,6 +58,15 @@ build-dev:
 	"Build the SIF on a Docker machine and transfer it:" \
 	"  ./apptainer/build.sh --dev" >&2
 	@exit 1
+endif
+
+ifeq ($(RUNTIME),docker)
+shell-dev:
+	$(COMPOSE) up -d $(DEV_SERVICE)
+	$(COMPOSE) exec $(DEV_SERVICE) bash
+else
+shell-dev:
+	./apptainer/run-dev.sh
 endif
 
 test-unit:
