@@ -27,3 +27,14 @@ help:
 bootstrap:
 	@$(PYTHON) scripts/bootstrap.py
 
+ifeq ($(RUNTIME),docker)
+build-dev:
+	$(COMPOSE) build $(DEV_SERVICE)
+else
+build-dev:
+	@printf "%s\n" \
+	"build-dev requires Docker, which is not available in this environment." \
+	"Build the SIF on a Docker machine and transfer it:" \
+	"  ./apptainer/build.sh --dev" >&2
+	@exit 1
+endif
