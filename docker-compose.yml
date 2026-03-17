@@ -1,0 +1,29 @@
+services:
+  # ---------------------------------------------------------------------------
+  # dev — Ubuntu 24.04 + micromamba/conda
+  # Use for: writing code, running tests, linting
+  #
+  # First-time setup (download CASA measures data, ~400MB):
+  #   chmod a+w docker/data && docker/download.sh --data
+  #
+  # Usage:
+  #   docker compose up -d dev              # start in background
+  #   docker compose exec dev bash          # open a shell
+  #   docker compose run --rm dev pytest pipeline/ --nologfile
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+    image: pipeline-dev
+    stdin_open: true
+    tty: true
+    command: sleep infinity
+    volumes:
+      - ./pipeline:/home/pipeline/pipeline        # live source mount — edits are instant
+      - ./.git/modules/pipeline:/home/pipeline/.git/modules/pipeline:ro  # git metadata for version detection
+      - ./raw:/home/pipeline/raw                  # sample measurement sets
+      - ./docker/data:/home/pipeline/.casa/data   # CASA measures data (shared with casa service)
+      - ./docker/dev/config.py:/home/pipeline/.casa/config.py  # disables auto-update checks
+      - ./pipeline-testdata:/home/pipeline/pipeline-testdata
+    working_dir: /home/pipeline

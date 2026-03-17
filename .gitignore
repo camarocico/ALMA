@@ -1,2 +1,4 @@
 *.org
 docker/data
+apptainer/*.sif
+docker/casa/*.xz
