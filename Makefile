@@ -38,6 +38,8 @@ PYTEST_ARGS ?=
 	build-casa \
 	shell-casa \
 	test-unit \
+	test-regression-fast \
+	test-regression \
 
 help:
 	@printf "%s\n" \
@@ -48,6 +50,8 @@ help:
 	"  make build-casa            Build the CASA image using docker/casa/version.env  (Docker only)" \
 	"  make shell-casa            Open a shell in the CASA runtime container" \
 	"  make test-unit             Run the default fast unit-style path in dev" \
+	"  make test-regression-fast  Run fast regression tests in casa" \
+	"  make test-regression       Run regression tests including --longtests in casa" \
 
 bootstrap:
 	@$(PYTHON) scripts/bootstrap.py
@@ -96,3 +100,11 @@ endif
 test-unit:
 	$(RUN_DEV) \
 		pytest $(UNIT_PATH) --nologfile -o "cache_dir=$(PYTEST_CACHE)" -q $(PYTEST_ARGS)
+
+test-regression-fast:
+	$(RUN_CASA) \
+		python3 -m pytest $(REGRESSION_FAST_PATH) --nologfile -vv $(PYTEST_ARGS)
+
+test-regression:
+	$(RUN_CASA) \
+		python3 -m pytest $(REGRESSION_PATH) --nologfile --longtests -vv $(PYTEST_ARGS)

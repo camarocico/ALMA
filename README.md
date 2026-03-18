@@ -120,3 +120,10 @@ make test-unit
 
 which will use the `pipeline-dev` container (both Docker and Apptainer).
 
+Regression tests can also be run via `make` shortcuts:
+
+```sh
+make test-regression-fast
+make test-regression
+```
+
