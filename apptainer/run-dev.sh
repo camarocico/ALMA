@@ -67,6 +67,28 @@ cat > "${GITCONFIG_FILE}" <<'EOF'
     directory = /home/pipeline/pipeline
 EOF
 
+# --- writable base for /home/pipeline ----------------------------------------
+#
+# In Apptainer the container filesystem is read-only. Tests write temp files to
+# the current working directory (/home/pipeline), which fails with EPERM/EROFS.
+# We bind a writable host directory over /home/pipeline so the base path is
+# writable. The more specific sub-mounts below are applied on top and continue
+# to take precedence for their subtrees.
+#
+# The stub subdirectories must exist inside PIPELINE_HOME before those
+# sub-mounts can override them (Apptainer requires the target path to exist
+# in the view that is active at mount time).
+
+PIPELINE_HOME="${ROOT_DIR}/.pipeline-home"
+mkdir -p \
+    "${PIPELINE_HOME}/pipeline" \
+    "${PIPELINE_HOME}/.git/modules/pipeline" \
+    "${PIPELINE_HOME}/.casa/data" \
+    "${PIPELINE_HOME}/pipeline-testdata" \
+    "${PIPELINE_HOME}/raw"
+# config.py is bound as a file; the stub must be a file, not a directory.
+touch "${PIPELINE_HOME}/.casa/config.py"
+
 # --- optional mounts ---------------------------------------------------------
 
 OPTIONAL_BINDS=()
@@ -92,6 +114,7 @@ exec apptainer exec \
     --env "CONDA_PREFIX=/opt/conda/envs/pipeline" \
     --env "CONDA_DEFAULT_ENV=pipeline" \
     --env "GIT_CONFIG_GLOBAL=${GITCONFIG_FILE}" \
+    --bind "${PIPELINE_HOME}:/home/pipeline" \
     --bind "${ROOT_DIR}/pipeline:/home/pipeline/pipeline" \
     --bind "${ROOT_DIR}/.git/modules/pipeline:/home/pipeline/.git/modules/pipeline:ro" \
     --bind "${ROOT_DIR}/docker/data:/home/pipeline/.casa/data" \
