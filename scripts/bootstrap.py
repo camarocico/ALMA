@@ -6,6 +6,7 @@ import sys
 
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
+PIPELINE_DIR = ROOT_DIR / "pipeline"
 TESTDATA_DIR = ROOT_DIR / "pipeline-testdata"
 VERSION_FILE = ROOT_DIR / "docker" / "casa" / "version.env"
 CASA_DIR = ROOT_DIR / "docker" / "casa"

@@ -132,4 +132,4 @@ make test-regression-fast
 make test-regression
 ```
 
-****NOTE**** Regression test hang at the moment, both in `docker` and `apptainer`.
+****NOTE**** Regression tests hang at the moment, both in `docker` and `apptainer`.
