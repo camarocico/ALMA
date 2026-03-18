@@ -30,7 +30,7 @@ Key paths in this workspace:
 
 The fastest path to a working development shell on a local machine is:
 
-```sh
+```shell
 git clone https://github.com/camarocico/ALMA.git
 cd ALMA
 git submodule update --init
@@ -41,18 +41,48 @@ The `make bootstrap` command will initialize the pipeline submodule and pull the
 
 If you need regression tests or other data-heavy workflows, clone the test data repository separately:
 
-```sh
+```shell
 git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git pipeline-testdata
 ```
 
-If you need CASA measures data, fetch it explicitly (this will build the Docker `pipeline-dev` image):
+The next step is to build the `pipeline-dev` container:
 
-```sh
+```shell
+make build-dev
+```
+
+If you need CASA measures data, fetch it explicitly (this will build the Docker `pipeline-dev` image, if that has not yet been done):
+
+```shell
 ./docker/download.sh --data
 ```
 
-If you need the full `casa` runtime container, fetch the CASA tarball too:
+If you need the full `pipeline-casa` runtime container, fetch the CASA tarball too:
 
-```sh
+```shell
 ./docker/download.sh --casa
+```
+
+and then build the `pipeline-casa` container:
+
+```shell
+make build-casa
+```
+
+
+## HPC Workspace (Apptainer-based)
+
+To run containers on HPC systems (such as [Habrok](https:wiki.hpc.rug.nl/habrok/start)), one needs to use Apptainer, since Docker is not usually available on these systems. Apptainer containers can only be created on systems where the user has root privileges, and then transfered manually to the HPC system.
+
+To create the Apptainer containers, we can continue from where we left off in the previous section, and run the build scripts:
+
+```shell
+./apptainer/build.sh --dev
+./apptainer/build.sh --casa
+```
+
+or
+
+```shell
+./apptainer/build.sh --all
 ```
